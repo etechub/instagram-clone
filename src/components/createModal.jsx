@@ -2,10 +2,9 @@ import { addDoc, collection, Timestamp} from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import React, { useState } from 'react'
 import { FaTimes } from 'react-icons/fa';
-import { db, storage } from '../config';
+import { auth, db, storage } from '../config';
 
 export default function CreateModal({ show, setShow }) {
-    const user = {id: 'elkwfjs2390we', username: 'dev_ahmed'}
     const [progress, setProgress] = useState('')
     const [selectedFile, setSelectedFile] = useState()
     const [caption, setCaption] = useState()
@@ -20,7 +19,7 @@ export default function CreateModal({ show, setShow }) {
         };
 
         // Upload file and metadata to the object 'images/mountains.jpg'
-        const storageRef = ref(storage, 'posts/' + user.id + '/'+ selectedFile.name);
+        const storageRef = ref(storage, 'posts/' + auth.currentUser.uid + '/'+ selectedFile.name);
         const uploadTask = uploadBytesResumable(storageRef, selectedFile, metadata);
 
         // Listen for state changes, errors, and completion of the upload.
@@ -69,9 +68,9 @@ export default function CreateModal({ show, setShow }) {
                 getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
                     // console.log('File available at', downloadURL);
                     await addDoc(collection(db, "posts"), {
-                        username: user.username,
-                        userId: user.id,
-                        profile_pic_url: '',
+                        username: auth.currentUser.displayName,
+                        userId: auth.currentUser.uid,
+                        profile_pic_url: auth.currentUser.photoURL,
                         mainImage: downloadURL,
                         caption,
                         date: Timestamp.fromDate(new Date())
