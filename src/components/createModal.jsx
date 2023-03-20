@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { addDoc, collection, Timestamp} from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import React, { useState } from 'react'
 import { FaTimes } from 'react-icons/fa';
@@ -11,6 +11,9 @@ export default function CreateModal({ show, setShow }) {
     const [caption, setCaption] = useState()
 
     const handleSubmit = async () => {
+        if(!selectedFile) return alert('Please select a picture')
+        // if(!caption) return alert('Please write a caption')
+
         // console.log(selectedFile, caption)
         const metadata = {
             contentType: 'image/jpeg'
@@ -64,14 +67,14 @@ export default function CreateModal({ show, setShow }) {
             () => {
                 // Upload completed successfully, now we can get the download URL
                 getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-                    console.log('File available at', downloadURL);
+                    // console.log('File available at', downloadURL);
                     await addDoc(collection(db, "posts"), {
                         username: user.username,
                         userId: user.id,
                         profile_pic_url: '',
                         mainImage: downloadURL,
                         caption,
-                        date: new Date().toLocaleDateString()
+                        date: Timestamp.fromDate(new Date())
                     });
                     setCaption('')
                     setSelectedFile()
