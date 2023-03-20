@@ -13,7 +13,7 @@ import { FaBars, FaRegComment, FaUser } from 'react-icons/fa';
 import { SlPaperPlane } from 'react-icons/sl';
 import CreateModal from './components/createModal';
 import AuthModal from './components/authModal';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { collection, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { auth, db } from './config';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { CiLogin, CiLogout } from 'react-icons/ci'
@@ -26,7 +26,6 @@ function App() {
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
-            console.log(user);
             setUser(user)
         })
     }, [])
@@ -34,7 +33,7 @@ function App() {
 
     useEffect(() => {
         const collectionRef = collection(db, 'posts');
-        const q = query(collectionRef, orderBy('date', 'desc'));
+        const q = query(collectionRef, orderBy('date', 'desc'), limit(20));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             if (!querySnapshot.empty) {
                 const list = [];
