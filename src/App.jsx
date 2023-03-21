@@ -30,11 +30,11 @@ function App() {
         })
     }, [])
 
-
     useEffect(() => {
         const collectionRef = collection(db, 'posts');
         const q = query(collectionRef, orderBy('date', 'desc'), limit(20));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            console.log(querySnapshot);
             if (!querySnapshot.empty) {
                 const list = [];
                 querySnapshot.docs.forEach((doc) => {
@@ -102,10 +102,10 @@ function App() {
                             </div>
                         </div>
                         {user ? <>
-                            <div className="flex items-center text-base gap-3" title={user.displayName}>
+                            <div className="flex items-center text-base gap-3" title={user?.displayName}>
                                 <div className="relative">
                                     <img
-                                        src={user.photoURL}
+                                        src={user?.photoURL}
                                         alt=""
                                         className="rounded-full w-8"
                                         layout="fill"
@@ -311,8 +311,8 @@ function App() {
                                         <div key={post.id} className="">
                                             <div className="border border-gray-600 rounded-t-lg flex justify-between items-center py-3 px-4">
                                                 <div className="flex gap-4">
-                                                    {user.photoURL ? <img
-                                                        src={user.photoURL}
+                                                    {user?.photoURL ? <img
+                                                        src={user?.photoURL}
                                                         layout="fill"
                                                         objectFit="contain"
                                                         alt=""
@@ -327,7 +327,7 @@ function App() {
                                                             <FaUser size={18} />
                                                         </div>
                                                 }
-                                                    <div className="">{user.displayName}</div>
+                                                    <div className="">{user?.displayName}</div>
                                                 </div>
                                                 <FiMoreHorizontal
                                                     data-te-ripple-init
