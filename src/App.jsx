@@ -16,7 +16,8 @@ import AuthModal from './components/authModal';
 import { collection, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { auth, db } from './config';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { CiLogin, CiLogout } from 'react-icons/ci'
+import { CiLogin, CiLogout, CiSearch } from 'react-icons/ci'
+import Story from './components/Story';
 
 function App() {
     const [show, setShow] = useState(false);
@@ -35,6 +36,7 @@ function App() {
         const collectionRef = collection(db, 'posts');
         const q = query(collectionRef, orderBy('date', 'desc'), limit(20));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            console.log(querySnapshot);
             if (!querySnapshot.empty) {
                 const list = [];
                 querySnapshot.docs.forEach((doc) => {
@@ -57,7 +59,7 @@ function App() {
 
     return (
         <>
-            <div className="h-screen md:grid md:grid-cols-[1fr_5fr] text-white bg-black ">
+            <div className="h-screen md:grid md:grid-cols-[1fr_5fr] w-full text-white bg-black ">
                 <div className="relative h-screen overflow-auto hidden md:flex flex-col lg:inline-grid gap-2 bg-black w-64 pr-1 border-r border-gray-600">
                     <div className="pt-4 h-24 w-48">
                         <img src={img1} layout="fill" objectFit="contain" alt="" />
@@ -102,10 +104,10 @@ function App() {
                             </div>
                         </div>
                         {user ? <>
-                            <div className="flex items-center text-base gap-3" title={user.displayName}>
+                            <div className="flex items-center text-base gap-3" title={user?.displayName}>
                                 <div className="relative">
                                     <img
-                                        src={user.photoURL}
+                                        src={user?.photoURL}
                                         alt=""
                                         className="rounded-full w-8"
                                         layout="fill"
@@ -114,15 +116,15 @@ function App() {
                                 </div>
                                 <h1>Profile</h1>
                             </div>
-                            <div className="flex items-center text-base gap-3" 
-                            onClick={() => {
-                                signOut(auth).then(() => {
-                                    // Sign-out successful.
-                                }).catch((error) => {
-                                    console.log(error);
-                                    // An error happened.
-                                });
-                            }}
+                            <div className="flex items-center text-base gap-3"
+                                onClick={() => {
+                                    signOut(auth).then(() => {
+                                        // Sign-out successful.
+                                    }).catch((error) => {
+                                        console.log(error);
+                                        // An error happened.
+                                    });
+                                }}
                             >
                                 <CiLogout size={25} color="red" />
                                 <h1>Logout</h1>
@@ -142,168 +144,24 @@ function App() {
                         </div>
                     </div>
                 </div>
-
-                <div className="h-screen overflow-auto py-8 px-4 md:p-8 flex flex-col items-center">
+                <div className="h-screen overflow-auto px-4 md:p-8 flex flex-col items-center">
+                <div className=' md:hidden sticky top-0 pb-4 flex bg-black'>
+                    <div className='relative mt-4 h-8 w-18'>
+                        <img src={img1} layout="fill" objectFit="contain" alt='' />
+                    </div>
+                    <div className=' mt-4 flex gap-3 items-center inset-y-0 h-12 pl-3 bg-gray-900 sm:text-sm  border-gray-300 pointer-events-none '>
+                        <CiSearch className='h-5 w-5 text-gray-500' />
+                        <input type="text" className='bg-transparent' placeholder='search' />
+                    </div>
+                    <div className="relative pl-2 pt-6">
+                        <FiHeart size={25} color="white" />
+                        <sup className="absolute left-6 mt-6 bg-red-500 rounded-full top-0 w-1 p-[6px]"></sup>
+                    </div>
+                </div>
                     <div className="md:max-w-[500px] mx-auto">
+                        <Story />
 
-                        <div className="rounded-lg border border-gray-600 w-[280px] md:w-full mx-auto overflow-auto py-4 px-6 ">
-                            <div className="flex gap-4">
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] rounded-full grid place-items-center"
-                                        style={{
-                                            background: 'rgb(216, 221, 19)',
-                                            backgroundImage:
-                                                'linear-gradient(158deg, rgba(216, 221, 19, 1) 0%, rgba(206, 31, 208, 1) 44%, rgba(246, 157, 23, 1) 100%)',
-                                        }}
-                                    >
-                                        <img
-                                            src={img2}
-                                            layout="fill"
-                                            objectFit="contain"
-                                            alt=""
-                                            className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full border-2 border-black"
-                                        />
-                                    </div>
-                                    <div className="">Dev_ahmed</div>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] rounded-full grid place-items-center"
-                                        style={{
-                                            background: 'rgb(216, 221, 19)',
-                                            backgroundImage:
-                                                'linear-gradient(158deg, rgba(216, 221, 19, 1) 0%, rgba(206, 31, 208, 1) 44%, rgba(246, 157, 23, 1) 100%)',
-                                        }}
-                                    >
-                                        <img
-                                            src={img2}
-                                            layout="fill"
-                                            objectFit="contain"
-                                            alt=""
-                                            className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full border-2 border-black"
-                                        />
-                                    </div>
-                                    <div className="">Dev_ahmed</div>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] rounded-full grid place-items-center"
-                                        style={{
-                                            background: 'rgb(216, 221, 19)',
-                                            backgroundImage:
-                                                'linear-gradient(158deg, rgba(216, 221, 19, 1) 0%, rgba(206, 31, 208, 1) 44%, rgba(246, 157, 23, 1) 100%)',
-                                        }}
-                                    >
-                                        <img
-                                            src={img2}
-                                            layout="fill"
-                                            objectFit="contain"
-                                            alt=""
-                                            className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full border-2 border-black"
-                                        />
-                                    </div>
-                                    <div className="">Dev_ahmed</div>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] rounded-full grid place-items-center"
-                                        style={{
-                                            background: 'rgb(216, 221, 19)',
-                                            backgroundImage:
-                                                'linear-gradient(158deg, rgba(216, 221, 19, 1) 0%, rgba(206, 31, 208, 1) 44%, rgba(246, 157, 23, 1) 100%)',
-                                        }}
-                                    >
-                                        <img
-                                            src={img2}
-                                            layout="fill"
-                                            objectFit="contain"
-                                            alt=""
-                                            className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full border-2 border-black"
-                                        />
-                                    </div>
-                                    <div className="">Dev_ahmed</div>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] rounded-full grid place-items-center"
-                                        style={{
-                                            background: 'rgb(216, 221, 19)',
-                                            backgroundImage:
-                                                'linear-gradient(158deg, rgba(216, 221, 19, 1) 0%, rgba(206, 31, 208, 1) 44%, rgba(246, 157, 23, 1) 100%)',
-                                        }}
-                                    >
-                                        <img
-                                            src={img2}
-                                            layout="fill"
-                                            objectFit="contain"
-                                            alt=""
-                                            className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full border-2 border-black"
-                                        />
-                                    </div>
-                                    <div className="">Dev_ahmed</div>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] rounded-full grid place-items-center"
-                                        style={{
-                                            background: 'rgb(216, 221, 19)',
-                                            backgroundImage:
-                                                'linear-gradient(158deg, rgba(216, 221, 19, 1) 0%, rgba(206, 31, 208, 1) 44%, rgba(246, 157, 23, 1) 100%)',
-                                        }}
-                                    >
-                                        <img
-                                            src={img2}
-                                            layout="fill"
-                                            objectFit="contain"
-                                            alt=""
-                                            className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full border-2 border-black"
-                                        />
-                                    </div>
-                                    <div className="">Dev_ahmed</div>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] rounded-full grid place-items-center"
-                                        style={{
-                                            background: 'rgb(216, 221, 19)',
-                                            backgroundImage:
-                                                'linear-gradient(158deg, rgba(216, 221, 19, 1) 0%, rgba(206, 31, 208, 1) 44%, rgba(246, 157, 23, 1) 100%)',
-                                        }}
-                                    >
-                                        <img
-                                            src={img2}
-                                            layout="fill"
-                                            objectFit="contain"
-                                            alt=""
-                                            className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full border-2 border-black"
-                                        />
-                                    </div>
-                                    <div className="">Dev_ahmed</div>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div
-                                        className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] rounded-full grid place-items-center"
-                                        style={{
-                                            background: 'rgb(216, 221, 19)',
-                                            backgroundImage:
-                                                'linear-gradient(158deg, rgba(216, 221, 19, 1) 0%, rgba(206, 31, 208, 1) 44%, rgba(246, 157, 23, 1) 100%)',
-                                        }}
-                                    >
-                                        <img
-                                            src={img2}
-                                            layout="fill"
-                                            objectFit="contain"
-                                            alt=""
-                                            className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full border-2 border-black"
-                                        />
-                                    </div>
-                                    <div className="">Dev_ahmed</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-5 flex flex-col gap-6">
+                        <div className="mt-5 flex flex-col mb-12 gap-6">
                             {posts.length > 0 &&
                                 posts.map((post) => {
                                     // console.log(post);
@@ -311,8 +169,8 @@ function App() {
                                         <div key={post.id} className="">
                                             <div className="border border-gray-600 rounded-t-lg flex justify-between items-center py-3 px-4">
                                                 <div className="flex gap-4">
-                                                    {user.photoURL ? <img
-                                                        src={user.photoURL}
+                                                    {user?.photoURL ? <img
+                                                        src={user?.photoURL}
                                                         layout="fill"
                                                         objectFit="contain"
                                                         alt=""
@@ -326,8 +184,8 @@ function App() {
                                                             }}>
                                                             <FaUser size={18} />
                                                         </div>
-                                                }
-                                                    <div className="">{user.displayName}</div>
+                                                    }
+                                                    <div className="">{user?.displayName}</div>
                                                 </div>
                                                 <FiMoreHorizontal
                                                     data-te-ripple-init
@@ -376,9 +234,39 @@ function App() {
                                     );
                                 })}
                         </div>
+
+
+                        <div className='flex gap-3 justify-evenly p-4 w-full fixed left-0 bottom-0 md:hidden bg-black'>
+                            <div className='flex items-center text-base gap-3'>
+                                <AiOutlineHome size={25} color='white' />
+                            </div>
+                            <div className='flex items-center text-base gap-3'>
+                                <HiOutlineSearch size={25} color='white' />
+                            </div>
+                            <div className='flex items-center text-base gap-3'>
+                                <MdOutlineExplore size={25} color='white' />
+                            </div>
+                            <div className='flex items-center text-base gap-3'>
+                                <BsCameraReels size={25} color='white' />
+                            </div>
+                            <div className='flex items-center text-base gap-3'>
+                                <div className='relative'>
+                                    <FiHeart size={25} color='white' />
+                                    <sup className='absolute left-4 bg-red-500 rounded-full top-0 w-1 p-[6px]'></sup>
+                                </div>
+                            </div>
+                            <div className='flex items-center text-base gap-3'>
+                                <TbMessageShare size={25} color='white' />
+                            </div>
+                            <div className='flex items-center text-base gap-3'>
+                                <BiMessageSquareAdd size={25} color='white' />
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
+
             <CreateModal show={show} setShow={setShow} />
             <AuthModal showAuth={showAuth} setShowAuth={setShowAuth} />
         </>
