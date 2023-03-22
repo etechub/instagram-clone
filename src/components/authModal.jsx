@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import React, { useState } from 'react'
@@ -6,12 +6,18 @@ import { FaTimes, FaUser } from 'react-icons/fa';
 import { auth, db, storage } from '../config';
 
 export default function AuthModal({ showAuth, setShowAuth }) {
+    const [tab, setTab] = useState(0)
     const [userName, setUserName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [cPassword, setCPassword] = useState('')
     const [file, setFile] = useState(null)
     const [progress, setProgress] = useState('')
+
+    const handleLogin = async () => {
+        await signInWithEmailAndPassword(auth, email, password)
+        setShowAuth(false)
+    }
 
     const handleSubmit = async () => {
         if (password !== cPassword) return alert('Your password must be the same');
@@ -103,7 +109,7 @@ export default function AuthModal({ showAuth, setShowAuth }) {
             setFile()
             setProgress('')
             setTimeout(() => {
-                setShowAuth(false)                
+                setShowAuth(false)
             }, 300);
         }
 
@@ -116,35 +122,58 @@ export default function AuthModal({ showAuth, setShowAuth }) {
             </div>
             <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10 text-white">
                 <div className="w-[300] md:w-[450px] px-4 bg-[#262626] text-white rounded-lg">
-                    <div className="border-b border-gray-600 text-center py-4 font-bold">Login</div>
-                    <div className="h-[520px] flex flex-col justify-center items-center">
-                        {file ? <img src={URL.createObjectURL(file)} alt="" className='w-[60px] h-[60px] rounded-full' /> :
-                            <div className="grid place-items-center w-[60px] h-[60px] rounded-full bg-blue-600">
+                    <div className="border-b border-gray-600 text-center py-4 font-bold flex gap-3 justify-center">
+                        <div className={`py-2 px-4 rounded-lg ${tab === 0 && "bg-blue-600"}`}
+                            onClick={() => setTab(0)}>Login</div>
+
+                        <div className={`py-2 px-4 rounded-lg ${tab === 1 && "bg-blue-600"}`}
+                            onClick={() => setTab(1)}>Signup</div>
+                    </div>
+
+                    {tab === 0 ?
+                        <div className="h-[520px] flex flex-col justify-center items-center">
+                            <div className="grid place-items-center w-[60px] h-[60px] rounded-full bg-blue-600 mb-3">
                                 <FaUser size={40} />
                             </div>
-                        }
-                        <div className="font-bold my-6">
-                            <label htmlFor="file" className='w-full bg-blue-600 text-white rounded-lg py-3 px-3 cursor-pointer flex flex-col md:flex-row gap-2 text-center'><span>Choose profile picture</span> <span>(Optional)</span></label>
-                            <input type="file" id="file" className='hidden' onChange={e => setFile(e.target.files[0])} />
-                        </div>
-                        <div className="">
-                            <input type="email" placeholder='enter email' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setEmail(e.target.value)} />
-                        </div>
-                        <div className="">
-                            <input type="password" placeholder='enter password' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setPassword(e.target.value)} />
-                        </div>
-                        <div className="">
-                            <input type="password" placeholder='confirm password' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setCPassword(e.target.value)} />
-                        </div>
-                        <div className="">
-                            <input type="text" placeholder='enter username' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setUserName(e.target.value)} />
-                        </div>
+                            <div className="">
+                                <input type="email" placeholder='enter email' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setEmail(e.target.value)} />
+                            </div>
+                            <div className="">
+                                <input type="password" placeholder='enter password' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setPassword(e.target.value)} />
+                            </div>
 
-                        <div className="text-center">{progress}</div>
+                            <button className='w-[10rem] h-12 mt-5 bg-blue-600 text-white rounded-lg py-3 px-5 cursor-pointer' onClick={handleLogin}>{progress && progress !==
+                                '100%' ? 'creating...' : 'Login'}</button>
+                        </div> :
+                        <div className="h-[520px] flex flex-col justify-center items-center">
+                            {file ? <img src={URL.createObjectURL(file)} alt="" className='w-[60px] h-[60px] rounded-full' /> :
+                                <div className="grid place-items-center w-[60px] h-[60px] rounded-full bg-blue-600">
+                                    <FaUser size={40} />
+                                </div>
+                            }
+                            <div className="font-bold my-6">
+                                <label htmlFor="file" className='w-full bg-blue-600 text-white rounded-lg py-3 px-3 cursor-pointer flex flex-col md:flex-row gap-2 text-center'><span>Choose profile picture</span> <span>(Optional)</span></label>
+                                <input type="file" id="file" className='hidden' onChange={e => setFile(e.target.files[0])} />
+                            </div>
+                            <div className="">
+                                <input type="email" placeholder='enter email' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setEmail(e.target.value)} />
+                            </div>
+                            <div className="">
+                                <input type="password" placeholder='enter password' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setPassword(e.target.value)} />
+                            </div>
+                            <div className="">
+                                <input type="password" placeholder='confirm password' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setCPassword(e.target.value)} />
+                            </div>
+                            <div className="">
+                                <input type="text" placeholder='enter username' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setUserName(e.target.value)} />
+                            </div>
 
-                        <button className='w-[10rem] h-12 mt-5 bg-blue-600 text-white rounded-lg py-3 px-5 cursor-pointer' onClick={handleSubmit}>{progress && progress !==
-                            '100%' ? 'creating...' : 'Create Account'}</button>
-                    </div>
+                            <div className="text-center">{progress}</div>
+
+                            <button className='w-[10rem] h-12 mt-5 bg-blue-600 text-white rounded-lg py-3 px-5 cursor-pointer' onClick={handleSubmit}>{progress && progress !==
+                                '100%' ? 'creating...' : 'Create Account'}</button>
+                        </div>
+                    }
                 </div>
             </div>
         </div>}

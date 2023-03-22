@@ -144,19 +144,19 @@ function App() {
                     </div>
                 </div>
                 <div className="h-screen overflow-auto px-4 md:p-8 flex flex-col items-center">
-                <div className=' md:hidden sticky top-0 pb-4 flex bg-black'>
-                    <div className='relative mt-4 h-8 w-18'>
-                        <img src={img1} layout="fill" objectFit="contain" alt='' />
+                    <div className=' md:hidden sticky top-0 pb-4 flex bg-black'>
+                        <div className='relative mt-4 h-8 w-18'>
+                            <img src={img1} layout="fill" objectFit="contain" alt='' />
+                        </div>
+                        <div className=' mt-4 flex gap-3 items-center inset-y-0 h-12 pl-3 bg-gray-900 sm:text-sm  border-gray-300 pointer-events-none '>
+                            <CiSearch className='h-5 w-5 text-gray-500' />
+                            <input type="text" className='bg-transparent' placeholder='search' />
+                        </div>
+                        <div className="relative pl-2 pt-6">
+                            <FiHeart size={25} color="white" />
+                            <sup className="absolute left-6 mt-6 bg-red-500 rounded-full top-0 w-1 p-[6px]"></sup>
+                        </div>
                     </div>
-                    <div className=' mt-4 flex gap-3 items-center inset-y-0 h-12 pl-3 bg-gray-900 sm:text-sm  border-gray-300 pointer-events-none '>
-                        <CiSearch className='h-5 w-5 text-gray-500' />
-                        <input type="text" className='bg-transparent' placeholder='search' />
-                    </div>
-                    <div className="relative pl-2 pt-6">
-                        <FiHeart size={25} color="white" />
-                        <sup className="absolute left-6 mt-6 bg-red-500 rounded-full top-0 w-1 p-[6px]"></sup>
-                    </div>
-                </div>
                     <div className="md:max-w-[500px] mx-auto">
                         <Story />
 
@@ -239,12 +239,12 @@ function App() {
                             <div className='flex items-center text-base gap-3'>
                                 <AiOutlineHome size={25} color='white' />
                             </div>
-                            <div className='flex items-center text-base gap-3'>
+                            {/* <div className='flex items-center text-base gap-3'>
                                 <HiOutlineSearch size={25} color='white' />
-                            </div>
-                            <div className='flex items-center text-base gap-3'>
+                            </div> */}
+                            {/* <div className='flex items-center text-base gap-3'>
                                 <MdOutlineExplore size={25} color='white' />
-                            </div>
+                            </div> */}
                             <div className='flex items-center text-base gap-3'>
                                 <BsCameraReels size={25} color='white' />
                             </div>
@@ -257,10 +257,45 @@ function App() {
                             <div className='flex items-center text-base gap-3'>
                                 <TbMessageShare size={25} color='white' />
                             </div>
-                            <div className='flex items-center text-base gap-3'>
+                            <div className='flex items-center text-base gap-3'
+                                onClick={() => {
+                                    user ? setShow(true) : setShowAuth(true)
+                                }}
+                            >
                                 <BiMessageSquareAdd size={25} color='white' />
                             </div>
-
+                            {user ? <>
+                                <div className="flex items-center text-base gap-3" title={user?.displayName}>
+                                    <div className="relative">
+                                        <img
+                                            src={user?.photoURL}
+                                            alt=""
+                                            className="rounded-full w-[20px] h-[20px]"
+                                            layout="fill"
+                                            objectFit="contain"
+                                        />
+                                    </div>
+                                    {/* <h1>Profile</h1> */}
+                                </div>
+                                <div className="flex items-center cursor-pointer text-base gap-3"
+                                    onClick={() => {
+                                        signOut(auth).then(() => {
+                                            // Sign-out successful.
+                                        }).catch((error) => {
+                                            console.log(error);
+                                            // An error happened.
+                                        });
+                                    }}
+                                >
+                                    <CiLogout size={25} color="red" />
+                                    {/* <h1>Logout</h1> */}
+                                </div>
+                            </> :
+                                <div className="flex items-center text-base gap-3" onClick={() => setShowAuth(true)}>
+                                    <CiLogin size={25} color="red" />
+                                    {/* <h1>Login</h1> */}
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
