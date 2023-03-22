@@ -236,28 +236,40 @@ function App() {
 
 
                         <div className='flex gap-3 justify-evenly p-4 w-full fixed left-0 bottom-0 md:hidden bg-black'>
-                            <div className='flex items-center text-base gap-3'>
+                            <div className='flex items-center text-base gap-3 cursor-pointer'
+                                onClick={() => {
+                                    // user ? setShow(true) : setShowAuth(true)
+                                }}>
                                 <AiOutlineHome size={25} color='white' />
                             </div>
-                            {/* <div className='flex items-center text-base gap-3'>
+                            {/* <div className='flex items-center text-base gap-3 cursor-pointer'>
                                 <HiOutlineSearch size={25} color='white' />
                             </div> */}
-                            {/* <div className='flex items-center text-base gap-3'>
+                            {/* <div className='flex items-center text-base gap-3 cursor-pointer'>
                                 <MdOutlineExplore size={25} color='white' />
                             </div> */}
-                            <div className='flex items-center text-base gap-3'>
+                            <div className='flex items-center text-base gap-3 cursor-pointer'
+                                onClick={() => {
+                                    user ? setShow(true) : setShowAuth(true)
+                                }}>
                                 <BsCameraReels size={25} color='white' />
                             </div>
-                            <div className='flex items-center text-base gap-3'>
+                            <div className='flex items-center text-base gap-3 cursor-pointer'
+                                onClick={() => {
+                                    user ? setShow(true) : setShowAuth(true)
+                                }}>
                                 <div className='relative'>
                                     <FiHeart size={25} color='white' />
                                     <sup className='absolute left-4 bg-red-500 rounded-full top-0 w-1 p-[6px]'></sup>
                                 </div>
                             </div>
-                            <div className='flex items-center text-base gap-3'>
+                            <div className='flex items-center text-base gap-3 cursor-pointer'
+                                onClick={() => {
+                                    user ? setShow(true) : setShowAuth(true)
+                                }}>
                                 <TbMessageShare size={25} color='white' />
                             </div>
-                            <div className='flex items-center text-base gap-3'
+                            <div className='flex items-center text-base gap-3 cursor-pointer'
                                 onClick={() => {
                                     user ? setShow(true) : setShowAuth(true)
                                 }}
@@ -265,7 +277,7 @@ function App() {
                                 <BiMessageSquareAdd size={25} color='white' />
                             </div>
                             {user ? <>
-                                <div className="flex items-center text-base gap-3" title={user?.displayName}>
+                                <div className="flex items-center text-base gap-3 cursor-pointer" title={user?.displayName}>
                                     <div className="relative">
                                         <img
                                             src={user?.photoURL}
@@ -277,7 +289,7 @@ function App() {
                                     </div>
                                     {/* <h1>Profile</h1> */}
                                 </div>
-                                <div className="flex items-center cursor-pointer text-base gap-3"
+                                <div className="flex items-center text-base gap-3 cursor-pointer"
                                     onClick={() => {
                                         signOut(auth).then(() => {
                                             // Sign-out successful.
@@ -291,8 +303,8 @@ function App() {
                                     {/* <h1>Logout</h1> */}
                                 </div>
                             </> :
-                                <div className="flex items-center text-base gap-3" onClick={() => setShowAuth(true)}>
-                                    <CiLogin size={25} color="red" />
+                                <div className="flex items-center text-base gap-3 cursor-pointer" onClick={() => setShowAuth(true)}>
+                                    <CiLogin size={25} color="green" />
                                     {/* <h1>Login</h1> */}
                                 </div>
                             }
