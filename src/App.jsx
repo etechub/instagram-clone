@@ -170,10 +170,10 @@ function App() {
                                                 <div className="flex gap-4">
                                                     {post?.profile_pic_url ? <img
                                                         src={post?.profile_pic_url}
-                                                        layout="fill"
-                                                        objectFit="contain"
+                                                        // layout="fill"
+                                                        // objectFit="contain"
                                                         alt=""
-                                                        className="w-[30px] h-[30px] rounded-full"
+                                                        className="w-[30px] h-fit rounded-full"
                                                     /> :
                                                         <div className="grid place-items-center w-[30px] h-[30px] rounded-full bg-blue-600"
                                                             style={{
