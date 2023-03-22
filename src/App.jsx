@@ -173,7 +173,7 @@ function App() {
                                                         // layout="fill"
                                                         // objectFit="contain"
                                                         alt=""
-                                                        className="w-[30px] h-fit rounded-full"
+                                                        className="w-full h-fit rounded-full"
                                                     /> :
                                                         <div className="grid place-items-center w-[30px] h-[30px] rounded-full bg-blue-600"
                                                             style={{
