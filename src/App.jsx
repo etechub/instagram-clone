@@ -130,7 +130,7 @@ function App() {
                             </div>
                         </> :
                             <div className="flex items-center text-base gap-3" onClick={() => setShowAuth(true)}>
-                                <CiLogin size={25} color="red" />
+                                <CiLogin size={25} color="green" />
                                 <h1>Login</h1>
                             </div>
                         }
