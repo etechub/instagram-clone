@@ -1,22 +1,27 @@
+import { collection, limit, onSnapshot, orderBy, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
-import img2 from '../img/profile.jpg';
+import { db } from '../config';
 
 export default function Story() {
     const [users, setUsers] = useState([])
-    useEffect(() => {
-        const users = [
-            { id: 1, displayName: 'dev_ahmen', photoURL: img2 },
-            { id: 2, displayName: 'dev_ahmen', photoURL: img2 },
-            { id: 1, displayName: 'dev_ahmen', photoURL: img2 },
-            { id: 1, displayName: 'dev_ahmen', photoURL: img2 },
-            { id: 1, displayName: 'dev_ahmen', photoURL: img2 },
-            { id: 1, displayName: 'dev_ahmen', photoURL: img2 },
-            { id: 1, displayName: 'dev_ahmen', photoURL: img2 },
-            { id: 1, displayName: 'dev_ahmen', photoURL: img2 },
-            { id: 1, displayName: 'dev_ahmen', photoURL: img2 },
-        ]
-        setUsers(users)
-    })
+
+     useEffect(() => {
+        const collectionRef = collection(db, 'users');
+        const q = query(collectionRef, orderBy('createAt', 'desc'), limit(50));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            console.log({querySnapshot});
+            if (!querySnapshot.empty) {
+                const list = [];
+                querySnapshot.docs.forEach((doc) => {
+                    var r = { ...doc.data(), id: doc.id };
+                    r && list.push(r);
+                });
+                setUsers(list);
+            }
+        });
+        return unsubscribe;
+    }, []);
+
     return (
         <div className="rounded-lg border border-gray-600 w-[290px] sm:w-[320px] md:w-full mx-auto overflow-auto py-4 px-6 ">
             <div className="flex gap-4">
@@ -32,14 +37,14 @@ export default function Story() {
                                 }}
                             >
                                 <img
-                                    src={img2}
+                                    src={user?.photoURL}
                                     layout="fill"
                                     objectFit="contain"
                                     alt=""
                                     className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] rounded-full border-2 border-black"
                                 />
                             </div>
-                            <div className="">Dev_ahmed</div>
+                            <div className="">{user?.displayName}</div>
                         </div>
                     )
                 })}

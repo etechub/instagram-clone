@@ -35,7 +35,7 @@ function App() {
         const collectionRef = collection(db, 'posts');
         const q = query(collectionRef, orderBy('date', 'desc'), limit(20));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            console.log(querySnapshot);
+            // console.log(querySnapshot);
             if (!querySnapshot.empty) {
                 const list = [];
                 querySnapshot.docs.forEach((doc) => {
@@ -108,14 +108,14 @@ function App() {
                                     <img
                                         src={user?.photoURL}
                                         alt=""
-                                        className="rounded-full w-8"
+                                        className="rounded-full w-8 h-8"
                                         layout="fill"
                                         objectFit="contain"
                                     />
                                 </div>
                                 <h1>Profile</h1>
                             </div>
-                            <div className="flex items-center text-base gap-3"
+                            <div className="flex items-center cursor-pointer text-base gap-3"
                                 onClick={() => {
                                     signOut(auth).then(() => {
                                         // Sign-out successful.
@@ -168,8 +168,8 @@ function App() {
                                         <div key={post.id} className="">
                                             <div className="border border-gray-600 rounded-t-lg flex justify-between items-center py-3 px-4">
                                                 <div className="flex gap-4">
-                                                    {user?.photoURL ? <img
-                                                        src={user?.photoURL}
+                                                    {post?.profile_pic_url ? <img
+                                                        src={post?.profile_pic_url}
                                                         layout="fill"
                                                         objectFit="contain"
                                                         alt=""
@@ -184,7 +184,7 @@ function App() {
                                                             <FaUser size={18} />
                                                         </div>
                                                     }
-                                                    <div className="">{user?.displayName}</div>
+                                                    <div className="">{post?.username}</div>
                                                 </div>
                                                 <FiMoreHorizontal
                                                     data-te-ripple-init

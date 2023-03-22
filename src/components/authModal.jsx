@@ -1,8 +1,9 @@
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import React, { useState } from 'react'
 import { FaTimes, FaUser } from 'react-icons/fa';
-import { auth, storage } from '../config';
+import { auth, db, storage } from '../config';
 
 export default function AuthModal({ showAuth, setShowAuth }) {
     const [userName, setUserName] = useState('')
@@ -16,15 +17,22 @@ export default function AuthModal({ showAuth, setShowAuth }) {
         if (password !== cPassword) return alert('Your password must be the same');
 
         if (email && password && userName) {
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
+            await createUserWithEmailAndPassword(auth, email, password)
+                .then(async (userCredential) => {
                     // Signed in 
                     const user = userCredential.user;
 
+                    console.log(user);
+
                     if (user) {
-                        updateProfile(auth.currentUser, {
+                        await updateProfile(auth.currentUser, {
                             displayName: userName
                         })
+                        await setDoc(doc(db, "users", auth.currentUser.uid), {
+                            userId: auth.currentUser.uid,
+                            displayName: userName,
+                            createAt: Timestamp.fromDate(new Date())
+                        });
                     }
                 })
                 .catch((error) => {
@@ -34,7 +42,7 @@ export default function AuthModal({ showAuth, setShowAuth }) {
         } else {
             alert('pls fill required fields')
         }
-
+        console.log('sdlfk');
         if (file && auth?.currentUser) {
             const metadata = {
                 contentType: 'image/jpeg'
@@ -73,9 +81,14 @@ export default function AuthModal({ showAuth, setShowAuth }) {
                     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
                         // console.log('File available at', downloadURL);
                         if (downloadURL) {
-                            updateProfile(auth.currentUser, {
+                            await updateProfile(auth.currentUser, {
                                 photoURL: downloadURL
                             })
+                            await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                                photoURL: downloadURL
+                            }).catch(err => {
+                                console.log(err);
+                            });
                             setEmail('')
                             setFile()
                             setProgress('')
@@ -89,7 +102,9 @@ export default function AuthModal({ showAuth, setShowAuth }) {
             setEmail('')
             setFile()
             setProgress('')
-            setShowAuth(false)
+            setTimeout(() => {
+                setShowAuth(false)                
+            }, 300);
         }
 
     }
@@ -100,29 +115,29 @@ export default function AuthModal({ showAuth, setShowAuth }) {
                 <FaTimes className="absolute top-10 right-10 text-white cursor-pointer" onClick={() => setShowAuth(false)} />
             </div>
             <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-10 text-white">
-                <div className="w-[450px] bg-[#262626] text-white rounded-lg">
-                    <div className="border-b border-gray-600 text-center py-4 font-bold">Create new post</div>
+                <div className="w-[300] md:w-[450px] px-4 bg-[#262626] text-white rounded-lg">
+                    <div className="border-b border-gray-600 text-center py-4 font-bold">Login</div>
                     <div className="h-[520px] flex flex-col justify-center items-center">
                         {file ? <img src={URL.createObjectURL(file)} alt="" className='w-[60px] h-[60px] rounded-full' /> :
                             <div className="grid place-items-center w-[60px] h-[60px] rounded-full bg-blue-600">
                                 <FaUser size={40} />
                             </div>
                         }
-                        <div className="font-bold my-8">
-                            <label htmlFor="file" className='w-32 h-14 bg-blue-600 text-white rounded-lg py-3 px-5 cursor-pointer'>Choose profile picture (Optional)</label>
+                        <div className="font-bold my-6">
+                            <label htmlFor="file" className='w-full bg-blue-600 text-white rounded-lg py-3 px-3 cursor-pointer flex flex-col md:flex-row gap-2 text-center'><span>Choose profile picture</span> <span>(Optional)</span></label>
                             <input type="file" id="file" className='hidden' onChange={e => setFile(e.target.files[0])} />
                         </div>
                         <div className="">
-                            <input type="email" placeholder='enter email' className='resize-none w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setEmail(e.target.value)} />
+                            <input type="email" placeholder='enter email' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setEmail(e.target.value)} />
                         </div>
                         <div className="">
-                            <input type="password" placeholder='enter password' className='resize-none w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setPassword(e.target.value)} />
+                            <input type="password" placeholder='enter password' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setPassword(e.target.value)} />
                         </div>
                         <div className="">
-                            <input type="password" placeholder='confirm password' className='resize-none w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setCPassword(e.target.value)} />
+                            <input type="password" placeholder='confirm password' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setCPassword(e.target.value)} />
                         </div>
                         <div className="">
-                            <input type="text" placeholder='enter username' className='resize-none w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setUserName(e.target.value)} />
+                            <input type="text" placeholder='enter username' className='resize-none w-[280px] md:w-[350px] bg-transparent mx-auto h-10 mt-5 rounded-lg px-4 py-1 border border-gray-600' required onChange={(e) => setUserName(e.target.value)} />
                         </div>
 
                         <div className="text-center">{progress}</div>
