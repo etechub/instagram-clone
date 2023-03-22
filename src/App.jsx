@@ -200,7 +200,7 @@ function App() {
                                                     // layout="fill"
                                                     // objectFit="contain"
                                                     alt=""
-                                                    className="w-full h-fit"
+                                                    className="w-[300px] md:w-[500px] mx-auto h-fit"
                                                 />
                                             </div>
                                             <div className="border border-gray-600 rounded-b-lg py-4 px-4">
