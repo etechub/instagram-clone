@@ -15,8 +15,16 @@ export default function AuthModal({ showAuth, setShowAuth }) {
     const [progress, setProgress] = useState('')
 
     const handleLogin = async () => {
-        await signInWithEmailAndPassword(auth, email, password)
-        setShowAuth(false)
+        const user = await signInWithEmailAndPassword(auth, email, password).catch(err => {
+            if (err.code === 'auth/wrong-password'){
+                alert("Your password is incorrect pls check and try again")
+            } else if (err.code === 'auth/user-not-found') {
+                alert("User not found pls use your email")
+            }else{
+                alert(err.message)
+            }
+        })
+        user && setShowAuth(false)
     }
 
     const handleSubmit = async () => {
